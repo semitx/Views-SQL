@@ -1,0 +1,62 @@
+Investigación sobre las vistas en SQL
+¿Qué son?
+Las vistas en SQL son como tablas virtuales que se crean a partir del resultado de
+una consulta (SELECT). No almacenan datos por sí mismas, sino que muestran
+información desde una o más tablas reales. Es como si hiciera una tabla temporal
+que me permite ver los datos que necesito sin modificar nada.
+¿Para qué sirven?
+Las vistas me sirven para:
+-Simplificar consultas complejas. En vez de escribir una consulta larga
+muchas veces, la guardo como una vista y listo.
+-Mostrar sólo cierta información. Por ejemplo, puedo ocultar columnas
+sensibles como sueldos o datos personales.
+-Facilitar el mantenimiento del sistema. Si necesito cambiar la lógica de una
+consulta, solo modifico la vista.
+-Organizar mejor los datos sin tener que tocar directamente las tablas
+originales.
+Usos comunes
+-Para reutilizar consultas que se usan frecuentemente.
+-Para hacer reportes personalizados.
+-Para unir o filtrar datos de varias tablas.
+-Para mejorar la seguridad limitando el acceso a información confidencial.
+Ventajas
+-Me ayuda a ocultar la complejidad de una consulta.
+-Aumenta la seguridad, porque no muestro toda la información.
+-Hace que el código sea más limpio y organizado.
+-Es más fácil mantener el sistema, ya que no tengo que modificar muchas
+consultas si cambio algo.
+-Me permite separar lo que se muestra (vista) de los datos reales (tablas).
+Desventajas
+-Al no guardar datos, puede ser más lenta si la consulta es complicada.
+-No todas las vistas se pueden actualizar, a veces no se puede hacer
+INSERT, UPDATE o DELETE.
+-Si cambian las tablas originales, la vista puede fallar.
+-Si abusas de las vistas, puede volverse complicado entender toda la
+estructura de la base de datos.
+Sintaxis para trabajar con vistas
+Crear una vista:
+sql
+CopiarEditar
+CREATE VIEW nombre_vista AS
+SELECT columna1, columna2
+FROM nombre_tabla
+WHERE condición;
+Consultar una vista:
+sql
+CopiarEditar
+SELECT * FROM nombre_vista;
+Modificar una vista:
+sql
+CopiarEditar
+CREATE OR REPLACE VIEW nombre_vista AS
+SELECT nueva_consulta;
+Eliminar una vista:
+sql
+CopiarEditar
+DROP VIEW nombre_vista;
+Lo que entendí con mis palabras
+Entendí que las vistas en SQL son como hacer una tabla temporal solo con los
+datos que tu quieres, ya sea de una misma tabla o de varias tablas, y pues con esto
+puedes seleccionar más específicamente los datos que quieres que se muestran en
+esa tabla para proteger datos que son de más privacidad o requieren mayor
+seguridad o son más sensibles.
