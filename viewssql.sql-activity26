@@ -1,6 +1,8 @@
 
 
-use sakila;
+----------------use sakila;
+
+1. Muestra los títulos de todas las películas junto con el nombre de la categoría a la que pertenecen.
 
 CREATE VIEW film_category_view AS
 SELECT f.film_id, f.title, fc.category_id, c.name
@@ -8,10 +10,14 @@ FROM film f
 JOIN film_category fc ON f.film_id = fc.film_id
 JOIN category c ON c.category_id = fc.category_id;
 
+2. Lista todas las películas con el idioma en que están habladas. Si alguna película no tiene idioma, muestra "NULL".
+
 CREATE VIEW film_language_view AS
 SELECT f.film_id, f.title, l.name AS language_name
 FROM film f
 LEFT JOIN language l ON f.language_id = l.language_id;
+
+3.Muestra todas las categorías, y si tienen películas, el número de películas en esa categoría. Si no tienen, muestra 0.
 
 CREATE VIEW categoria_con_cantidad_peliculas AS
 SELECT c.name, COUNT(fc.film_id) AS cantidad_peliculas
@@ -19,6 +25,8 @@ FROM category c
 LEFT JOIN film_category fc ON c.category_id = fc.category_id
 GROUP BY c.name
 ORDER BY cantidad_peliculas DESC;
+
+4. Lista todos los clientes y cuánto dinero han pagado en total. Si no han hecho pagos, muestra 0.
 
 CREATE VIEW vista_pagos_clientes AS
 SELECT c.customer_id,CONCAT(c.first_name, " ", c.last_name) AS nombre_completo, SUM(p.amount) AS total_pagos
@@ -28,11 +36,15 @@ GROUP BY c.customer_id;
 SELECT * FROM vista_pagos_clientes
 ORDER BY customer_id;
 
+5. Muestra todas las direcciones y, si hay una tienda en esa dirección, muestra su ID.
+
 CREATE VIEW StoreAddresses AS
 SELECT a.address, s.store_id
 FROM address a
 LEFT JOIN store s ON a.address_id = s.address_id;
 SELECT * FROM StoreAddresses;
+
+6. Muestra la fecha de renta y el título de la película que fue rentada.
 
 CREATE VIEW RentalFilms AS
 SELECT r.rental_date, f.title
@@ -41,11 +53,15 @@ JOIN inventory i ON r.inventory_id = i.inventory_id
 JOIN film f ON i.film_id = f.film_id;
 SELECT * FROM RentalFilms;
 
+7. Lista todos los empleados y la tienda en la que trabajan. Si algún empleado no tiene tienda asignada, muestra NULL.
+
 CREATE VIEW StaffStore AS
 SELECT s.staff_id, s.first_name, s.last_name, s.store_id
 FROM staff s
 LEFT JOIN store st ON s.store_id = st.store_id;
 SELECT * FROM StaffStore;
+
+8. Muestra todas las ciudades y la cantidad de clientes que viven en ellas. Si no hay clientes, muestra 0.
 
 CREATE VIEW city_customer_count AS
 SELECT ci.city, COUNT(c.customer_id) AS customer_count
@@ -55,6 +71,8 @@ LEFT JOIN customer c ON a.address_id = c.address_id
 GROUP BY ci.city_id;
 SELECT * FROM city_customer_count;
 
+9. Lista los clientes junto con las películas que han rentado.
+
 CREATE VIEW customer_rentals AS
 SELECT c.first_name, c.last_name, f.title
 FROM customer c
@@ -62,6 +80,8 @@ JOIN rental r ON c.customer_id = r.customer_id
 JOIN inventory i ON r.inventory_id = i.inventory_id
 JOIN film f ON i.film_id = f.film_id;
 SELECT * FROM customer_rentals;
+
+10. Muestra todas las películas y cuántas veces han sido rentadas. Incluye las que nunca se han rentado.
 
 CREATE VIEW film_rental_summary AS
 SELECT f.title, COUNT(r.rental_id) AS rental_count
@@ -71,12 +91,16 @@ LEFT JOIN rental r ON i.inventory_id = r.inventory_id
 GROUP BY f.film_id;
 SELECT * FROM film_rental_summary;
 
+11. Muestra todos los actores junto con la cantidad de películas en las que han actuado. Si un actor no ha actuado en ninguna película, mostrar 0.
+
 CREATE VIEW actor_film_count AS
 SELECT a.first_name, a.last_name, COUNT(fa.film_id) AS film_count
 FROM actor a
 LEFT JOIN film_actor fa ON a.actor_id = fa.actor_id
 GROUP BY a.actor_id;
 SELECT * FROM actor_film_count;
+
+12. Muestra todas las tiendas, incluso si no tienen empleados asignados, junto con la cantidad de empleados que trabajan en cada una.
 
 CREATE VIEW store_employee_count AS
 SELECT s.store_id, COUNT(st.staff_id) AS employee_count
@@ -86,6 +110,7 @@ GROUP BY s.store_id;
 SELECT * FROM store_employee_count;
 
 
+1.-Muestra los títulos de las películas que tienen la misma duración que la película 'ALIEN CENTER'.
 
 create view film_length as
 select title, length
@@ -98,6 +123,8 @@ where length = (
     where title = "ALIEN CENTER"
 );
 
+2.-Muestra los nombres de los clientes que han hecho al menos un pago mayor a 5 dólares.
+
 create view customer_amount as
 SELECT first_name,last_name
 FROM customer
@@ -107,6 +134,8 @@ WHERE customer_id IN (
     WHERE amount > 5
 );
 SELECT * FROM customer_amount;
+
+3.-Muestra los títulos de las películas que tienen el mismo precio de renta que la película 'ZOOLANDER FICTION'.
 
 create view rentalrate_zoolander as
 select title
@@ -118,6 +147,7 @@ where rental_rate=(
 );
 SELECT * FROM rentalrate_zoolander;
 
+4.-Muestra los nombres de los actores que actuaron en la película 'GHOSTBUSTERS ELF'.
 
 create view ghostbusters as
 select actor_id, concat(first_name, " ", last_name) as nombre
@@ -130,6 +160,7 @@ where actor_id IN (
 );
 SELECT * FROM ghostbusters;
 
+5.-Muestra las películas cuya duración es mayor al promedio de todas las películas.
 
 create view prom as
 select film_id, title, length
@@ -140,6 +171,7 @@ where length > (
 );
 SELECT * FROM prom;
 
+6.-Lista los nombres de los clientes que han realizado al menos un pago.
 
 create view customer_with_payments as
 select customer_id, concat(first_name, " ", last_name) as nombre
@@ -149,6 +181,8 @@ where customer_id IN(
     from payment
 );
 select * from customer_with_payments;
+
+7.- Muestra los títulos de las películas que nunca han sido rentadas. 
 
 CREATE VIEW unavailable_films AS
 SELECT film_id, title
@@ -160,6 +194,8 @@ WHERE film_id NOT IN (
 );
 select * from unavailable_films;
 
+8.-Muestra el nombre de las categorías que tienen más de 50 películas.
+
 CREATE VIEW popular_categories AS
 SELECT name
 FROM category
@@ -170,6 +206,8 @@ WHERE category_id IN (
     HAVING COUNT(film_id) > 50
 );
 select * from popular_categories;
+
+9.-Muestra los nombres de los empleados que trabajan en la tienda que tiene más películas en inventario. 
 
 CREATE VIEW staff_from_largest_store AS
 SELECT first_name, last_name
@@ -183,6 +221,7 @@ WHERE store_id = (
 );
 select * from staff_from_largest_store;
 
+10.-Muestra los títulos de las películas que tienen el mismo rating que la película 'ACADEMY DINOSAUR'.
 
 CREATE VIEW film_rating_view AS
 SELECT title
@@ -194,6 +233,7 @@ WHERE rating IN (
 );
 SELECT * FROM film_rating_view;
 
+11.-Muestra el nombre de los actores que han participado en más de 20 películas. 
 
 CREATE VIEW actores_mas_de_20_peliculas AS
 SELECT CONCAT(first_name, " ", last_name) AS nombre
@@ -206,6 +246,8 @@ WHERE actor_id IN (
 );
 SELECT * FROM actores_mas_de_20_peliculas;
 
+12.-Muestra los títulos de las películas que tienen el mismo costo de reposición que la película 'CRUSADE HONEY
+
 CREATE VIEW title_crusadehoney AS
 select title
 from film
@@ -217,13 +259,17 @@ where replacement_cost IN (
 SELECT * FROM title_crusadehoney;
 
 
-use videojuego;
+----------------use videojuego;
+
+1.-Jugadores con edad mayor al promedio 
 
 CREATE VIEW edad_jugadores AS
 SELECT Nombre, Edad
 FROM jugadores
 WHERE Edad > (SELECT AVG(Edad) FROM jugadores);
 select * from edad_jugadores;
+
+2.-Misiones de más nivel que “Caza del lobo blanco”
 
 CREATE VIEW lobo_blanco AS
 SELECT Nombre, Nivel
@@ -235,6 +281,7 @@ WHERE Nivel > (
 );
 select * from lobo_blanco;
 
+3.-Jugadores que han jugado más de una partida
 
 CREATE VIEW jugadores_partida AS
 SELECT Nombre
@@ -247,6 +294,8 @@ WHERE ClaveJugador IN (
 );
 select * from jugadores_partida;
 
+4.-Muestra los items que sean de tipo arma
+
 CREATE VIEW tipo_arma AS
 SELECT Nombre
 FROM items
@@ -256,6 +305,8 @@ WHERE Tipo IN (
     WHERE items.Tipo = 'Arma'
 );
 select * from tipo_arma;
+
+5.-Muestra los items que tengan de estadística defensa 
 
 CREATE VIEW item_defensa AS
 SELECT Nombre
@@ -268,7 +319,9 @@ WHERE Estadisticas LIKE (
 );
 select * from item_defensa;
 
-use ligafutbol;
+----------------use ligafutbol;
+
+1.-Cuenta los partidos por equipo 
 
 CREATE VIEW total_partidos AS
 SELECT e.Nombre AS Equipo,
@@ -276,12 +329,15 @@ SELECT e.Nombre AS Equipo,
 FROM equipos e;
 select * from total_partidos;
 
+2.-Obtiene los jugadores con su equipo
 
 CREATE VIEW jugador_equipo AS
 SELECT Nombre,
        (SELECT Nombre FROM equipos WHERE ClaveEquipo = j.ClaveEquipo) AS Equipo
 FROM jugadores j;
 select * from jugador_equipo;
+
+3.-Muestra los árbitros que han arbitrado partidos con más de 3 goles 
 
 CREATE VIEW arbitros_goles AS
 SELECT DISTINCT a.Nombre
@@ -292,6 +348,8 @@ WHERE a.ClaveArbitro IN
     WHERE SUBSTRING_INDEX(p.Goles, '-', -1) + SUBSTRING_INDEX(p.Goles, '-', 1) > 3);
 select * from arbitros_goles;
 
+4.-Muestra los jugadores con su sueldo y equipo 
+
 CREATE VIEW jugador_sueldo AS
 SELECT j.Nombre AS Jugador,
        j.Sueldo,
@@ -300,7 +358,9 @@ FROM jugadores j;
 select * from jugador_sueldo;
 
 
-use tienda;
+----------------use tienda;
+
+1.-Muestra los artículos con su marca 
 
 CREATE VIEW marca_descrip AS
 SELECT a.Descripcion,
@@ -308,11 +368,15 @@ SELECT a.Descripcion,
 FROM articulo a;
 select * from marca_descrip;
 
+2.-Muestra las compras de cada cliente 
+
 CREATE VIEW cliente_compras AS
 SELECT c.Nombre AS Cliente,
        (SELECT COUNT(*) FROM ventas v WHERE v.ClaveCliente = c.ClaveCliente) AS TotalVentas
 FROM clientes c;
 select * from cliente_compras;
+
+3.-Muestra los artículos con precio mayor al promedio
 
 CREATE VIEW precio_mayor AS
 SELECT a.Descripcion,
@@ -321,12 +385,16 @@ FROM articulo a
 WHERE a.Precio > (SELECT AVG(Precio) FROM articulo);
 select * from precio_mayor;
 
+4.-Muestra los vendedores que han hecho más de 3 ventas 
+
 CREATE VIEW ventas_mayor3 AS
 SELECT v.ClaveVendedor,
        (SELECT COUNT(*) FROM ventas ve WHERE ve.ClaveVendedor = v.ClaveVendedor) AS TotalVentas
 FROM vendedor v
 HAVING TotalVentas > 3;
 select * from ventas_mayor3;
+
+5.-Obtiene clientes con saldo menor a el total de sus compras
 
 CREATE VIEW clientes_menorsaldo AS
 SELECT c.Nombre AS Cliente,
@@ -336,7 +404,9 @@ FROM clientes c
 WHERE c.Saldo < (SELECT SUM(v.Total) FROM ventas v WHERE v.ClaveCliente = c.ClaveCliente);
 select * from clientes_menorsaldo;
 
-use escuela;
+----------------use escuela;
+
+1.-Muestra los estudiantes con su grupo 
 
 CREATE VIEW estudiante_grupo AS
 SELECT e.Nombre,
@@ -344,6 +414,7 @@ SELECT e.Nombre,
 FROM estudiante e;
 select * from estudiante_grupo;
 
+2.-Cuenta los estudiantes de cada grupo
 
 CREATE VIEW grupo_estudiantes AS
 SELECT g.ClaveGrupo,
@@ -351,11 +422,15 @@ SELECT g.ClaveGrupo,
 FROM grupos g;
 select * from grupo_estudiantes;
 
+3.-Muestra las materias con sus maestros
+
 CREATE VIEW maestro_materias AS
 SELECT m.Nombre AS Materia,
     (SELECT GROUP_CONCAT(ma.Nombre SEPARATOR ', ' ) FROM maestros ma WHERE ma.Grupos) AS maestro
 	 FROM materias m;
 select * from maestro_materias;
+
+4.-Obtener los horarios un grupo 
 
 CREATE VIEW horario AS
 SELECT h.Materias,
@@ -365,6 +440,7 @@ FROM horarios h
 WHERE h.Grupo = 101;
 select * from horario;
 
+5.-Obtener los grupos con más de 20 estudiantes 
 
 CREATE VIEW estudiantesmas AS
 SELECT g.ClaveGrupo
